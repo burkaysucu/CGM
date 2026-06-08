@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using codessentials.CGM.Classes;
 using codessentials.CGM.Commands;
+using codessentials.CGM.Elements;
 using NUnit.Framework;
 using Shouldly;
 
@@ -1352,7 +1353,8 @@ namespace codessentials.CGM.Tests
                 // MetafileDefaultReplacement command itself
                 cmds.ShouldNotBeNull();
                 cmds.ElementClass.ShouldBe(ClassCode.MetafileDescriptorElements);
-                cmds.ElementId.ShouldBe(9);
+                cmds.ElementId.ShouldBe((int)MetaFileDescriptorElement.METAFILE_DEFAULTS_REPLACEMENT);
+                cmds.ShouldBeOfType<MetafileDefaultsReplacement>();
 
                 cmds.EmbeddedCommands.Count.ShouldBeEquivalentTo(2);
 
