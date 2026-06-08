@@ -1344,15 +1344,26 @@ namespace codessentials.CGM.Tests
         {
             TestCommand(cgm =>
             {
-                var command = new MaximumColourIndex(cgm, 55);
-                return new MetafileDefaultsReplacement(cgm, command);
-            }, cmd =>
+                var command1 = new MaximumColourIndex(cgm, 55);
+                var command2 = new MaximumVdcExtent(cgm, Point, Point2);
+                return new MetafileDefaultsReplacement(cgm, [command1, command2]);
+            }, cmds =>
             {
-                cmd.EmbeddedCommand.ShouldNotBeNull();
-                cmd.EmbeddedCommand.ElementClass.ShouldBe(ClassCode.MetafileDescriptorElements);
-                cmd.EmbeddedCommand.ElementId.ShouldBe(9);
-                cmd.EmbeddedCommand.ShouldBeOfType<MaximumColourIndex>();
-                (cmd.EmbeddedCommand as MaximumColourIndex).Value.ShouldBe(55);
+                // MetafileDefaultReplacement command itself
+                cmds.ShouldNotBeNull();
+                cmds.ElementClass.ShouldBe(ClassCode.MetafileDescriptorElements);
+                cmds.ElementId.ShouldBe(9);
+
+                cmds.EmbeddedCommands.Count.ShouldBeEquivalentTo(2);
+
+                // First embedded command - MaximumColourIndex
+                cmds.EmbeddedCommands[0].ShouldBeOfType<MaximumColourIndex>();
+                (cmds.EmbeddedCommands[0] as MaximumColourIndex).Value.ShouldBe(55);
+
+                // Second embedded command - MaximumVdcExtent
+                cmds.EmbeddedCommands[1].ShouldBeOfType<MaximumVdcExtent>();
+                (cmds.EmbeddedCommands[1] as MaximumVdcExtent).FirstCorner.ShouldBe(Point);
+                (cmds.EmbeddedCommands[1] as MaximumVdcExtent).SecondCorner.ShouldBe(Point2);
             });
         }
 
